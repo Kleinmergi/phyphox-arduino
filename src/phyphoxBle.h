@@ -46,18 +46,16 @@ static const char *deviceName = "phyphox-Arduino";
 #define CONFIGSIZE 20
 #endif
 #if defined(ARDUINO_SAMD_MKR1000) || defined(ARDUINO_SENSEBOX_MCU_ESP32S2)
-    #include "phyphoxBLE_NINAB31.h"
+    #include "boards/phyphoxBLE_NINAB31.h"
 #elif defined(ARDUINO_ARCH_MBED)
-    #include "phyphoxBLE_NRF52.h"
-
-
+    #include "boards/phyphoxBLE_NRF52.h"
 #elif defined(ESP32) && !defined(ARDUINO_SENSEBOX_MCU_ESP32S2)
-    #include "phyphoxBLE_ESP32.h"
+    #include "boards/phyphoxBLE_ESP32.h"
 #elif defined(ARDUINO_SAMD_NANO_33_IOT) || defined(ARDUINO_UNOR4_WIFI) || defined(ARDUINO_SAMD_MKRWIFI1010)
     #include <ArduinoBLE.h>
-    #include "phyphoxBLE_NanoIOT.h"
+    #include "boards/phyphoxBLE_NanoIOT.h"
 #elif defined(ARDUINO_ARCH_STM32)
-    #include "phyphoxBLE_STM32.h"
+    #include "boards/phyphoxBLE_STM32.h"
 #else
 #error "Unsupported board selected!"
 #endif
