@@ -44,34 +44,101 @@ uint8_t PhyphoxBLE::eventType = NULL;
 uint16_t PhyphoxBLE::MTU = 20;
 uint16_t PhyphoxBleExperiment::MTU = 20;
 
-class MyExpCallback: public BLEDescriptorCallbacks {
+#if defined(CONFIG_BT_NIMBLE_ROLE_PERIPHERAL)
+class MyExpCallback: public BLECharacteristicCallbacks {
+    private:
+      HardwareSerial* printer;
 
     public:
-      MyExpCallback(){};
-
+      MyExpCallback(HardwareSerial* hwPrint) {
+        printer = hwPrint;
+      }
     private:
 
-    void onWrite(BLEDescriptor* pDescriptor){
-      uint8_t* rxValue = pDescriptor->getValue();
+    void onSubscribe(BLECharacteristic *pCharacteristic, ble_gap_conn_desc *desc, uint16_t subValue) override {
+      #ifdef DEBUG
+        if(printer){
+          printer->println("onSubscribe (exp)");
+        }
+      #endif
 
-
-    	if(pDescriptor->getLength() > 0){
-    		if (rxValue[0] == 1) {
-    			// start when_subscription_received() on cpu 1
-    	      		PhyphoxBLE::startTask();
-    		}
-    	}
+      if (subValue) {
+        // start when_subscription_received() on cpu 1
+        PhyphoxBLE::startTask();
+      }
     };
   };
-
-class MyDataCallback: public BLEDescriptorCallbacks {
+#else
+class MyExpDescCallback: public BLEDescriptorCallbacks {
+    private:
+      HardwareSerial* printer;
 
     public:
-      MyDataCallback(){};
+      MyExpDescCallback(HardwareSerial* hwPrint) {
+        printer = hwPrint;
+      }
+    private:
+
+    void onWrite(BLEDescriptor* pDescriptor) override {
+      #ifdef DEBUG
+        if(printer){
+          printer->println("descriptor write (exp)");
+        }
+      #endif
+      uint8_t* rxValue = pDescriptor->getValue();
+
+      if(pDescriptor->getLength() > 0){
+        if (rxValue[0] == 1) {
+          // start when_subscription_received() on cpu 1
+          PhyphoxBLE::startTask();
+        }
+      }
+    };
+  };
+#endif
+
+#if defined(CONFIG_BT_NIMBLE_ROLE_PERIPHERAL)
+class MyDataCallback: public BLECharacteristicCallbacks {
+    private:
+      HardwareSerial* printer;
+
+    public:
+      MyDataCallback(HardwareSerial* hwPrint) {
+        printer = hwPrint;
+      }
 
     private:
 
-    void onWrite(BLEDescriptor* pDescriptor){
+    void onSubscribe(BLECharacteristic *pCharacteristic, ble_gap_conn_desc *desc, uint16_t subValue) override {
+      #ifdef DEBUG
+        if(printer){
+          printer->println("onSubscribe (data)");
+        }
+      #endif
+
+      if(subValue > 0){
+        PhyphoxBLE::isSubscribed=true;
+      }
+    };
+  };
+#else
+class MyDataDescCallback: public BLEDescriptorCallbacks {
+    private:
+      HardwareSerial* printer;
+
+    public:
+      MyDataDescCallback(HardwareSerial* hwPrint) {
+        printer = hwPrint;
+      }
+
+    private:
+
+    void onWrite(BLEDescriptor* pDescriptor) override {
+      #ifdef DEBUG
+        if(printer){
+          printer->println("descriptor write (data)");
+        }
+      #endif
       uint8_t* rxValue = pDescriptor->getValue();
 
       if(pDescriptor->getLength() > 0){
@@ -79,40 +146,86 @@ class MyDataCallback: public BLEDescriptorCallbacks {
       }
     };
   };
+#endif
 
 class MyEventCallback: public BLECharacteristicCallbacks {
+  private:
+    HardwareSerial* printer;
 
-    public:
-      MyEventCallback(){};
-
+  public:
+    MyEventCallback(HardwareSerial* hwPrint) {
+        printer = hwPrint;
+    }
     private:
 
-    void onWrite(BLECharacteristic *pCharacteristic) {
+    void onWrite(BLECharacteristic *pCharacteristic) override {
+      #ifdef DEBUG
+        if(printer){
+          printer->println("characteristic write (event)");
+        }
+      #endif
       PhyphoxBLE::eventCharacteristicHandler();
     };
   };
 
 class MyCharCallback: public BLECharacteristicCallbacks {
+  private:
+    HardwareSerial* printer;
+
   public:
-    MyCharCallback(){};
+    MyCharCallback(HardwareSerial* hwPrint) {
+        printer = hwPrint;
+    }
   private:
     PhyphoxBLE* myServerPointer;
-    void onWrite(BLECharacteristic *pCharacteristic) {
-                 PhyphoxBLE::configHandlerDebug();
-
+    void onWrite(BLECharacteristic *pCharacteristic) override {
+      #ifdef DEBUG
+        if(printer){
+          printer->println("characteristic write (config)");
+        }
+      #endif
+      PhyphoxBLE::configHandlerDebug();
     }
 };
 
 class MyServerCallbacks: public BLEServerCallbacks {
-    void onConnect(BLEServer* pServer, esp_ble_gatts_cb_param_t *param) {
+
+private:
+    HardwareSerial* printer;
+
+public:
+    MyServerCallbacks(HardwareSerial* hwPrint) {
+        printer = hwPrint;
+    }
+
+#if defined(CONFIG_BT_NIMBLE_ROLE_PERIPHERAL)
+    void onConnect(BLEServer *pServer, ble_gap_conn_desc *desc) override {
+      #ifdef DEBUG
+        if(printer){
+          printer->println("onConnect (NimBLE)");
+        }
+      #endif
+      pServer->updateConnParams(desc->conn_handle, PhyphoxBLE::minConInterval, PhyphoxBLE::maxConInterval, PhyphoxBLE::slaveLatency, PhyphoxBLE::timeout);
+      PhyphoxBLE::currentConnections+=1;
+    };
+#else
+    void onConnect(BLEServer* pServer, esp_ble_gatts_cb_param_t *param) override {
+      #ifdef DEBUG
+        if(printer){
+          printer->println("onConnect (legacy)");
+        }
+      #endif
       pServer->updateConnParams(param->connect.remote_bda,PhyphoxBLE::minConInterval,PhyphoxBLE::maxConInterval,PhyphoxBLE::slaveLatency,PhyphoxBLE::timeout);
       PhyphoxBLE::currentConnections+=1;
     };
+#endif
 
-    void onDisconnect(BLEServer* pServer) {
+    void onDisconnect(BLEServer* pServer) override {
       PhyphoxBLE::disconnected();
       PhyphoxBLE::currentConnections-=1;
     }
+
+
 };
 
 void PhyphoxBLE::configHandlerDebug(){
@@ -185,7 +298,7 @@ void PhyphoxBLE::start(const char * DEVICE_NAME)
 
 	BLEDevice::init(DEVICE_NAME);
 	myServer = BLEDevice::createServer();
-  myServer->setCallbacks(new MyServerCallbacks());
+  myServer->setCallbacks(new MyServerCallbacks(printer));
 	phyphoxExperimentService = myServer->createService(phyphoxBleExperimentServiceUUID);
 
   experimentCharacteristic = phyphoxExperimentService->createCharacteristic(
@@ -221,11 +334,15 @@ void PhyphoxBLE::start(const char * DEVICE_NAME)
   myEventDescriptor = new BLE2902();
   myConfigDescriptor = new BLE2902();
 
-
-  myExperimentDescriptor->setCallbacks(new MyExpCallback());
-  myDataDescriptor->setCallbacks(new MyDataCallback());
-  eventCharacteristic->setCallbacks(new MyEventCallback());
-  configCharacteristic->setCallbacks(new MyCharCallback());
+#if defined(CONFIG_BT_NIMBLE_ROLE_PERIPHERAL)
+  experimentCharacteristic->setCallbacks(new MyExpCallback(printer));
+  dataCharacteristic->setCallbacks(new MyDataCallback(printer));
+#else
+  myExperimentDescriptor->setCallbacks(new MyExpDescCallback(printer));
+  myDataDescriptor->setCallbacks(new MyDataDescCallback(printer));
+#endif
+  eventCharacteristic->setCallbacks(new MyEventCallback(printer));
+  configCharacteristic->setCallbacks(new MyCharCallback(printer));
 
   dataCharacteristic->addDescriptor(myDataDescriptor);
   experimentCharacteristic->addDescriptor(myExperimentDescriptor);
