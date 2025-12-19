@@ -6,7 +6,6 @@
 
 #include <STM32duinoBLE.h>
 
-#include <phyphoxBle.h>
 #include "phyphoxBleExperiment.h"
 
 class PhyphoxBLE

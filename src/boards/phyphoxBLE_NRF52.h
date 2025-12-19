@@ -4,7 +4,6 @@
 	#define NDEBUG
 #endif
 
-#include <phyphoxBle.h>
 #include <mbed.h>
 #include <ble/BLE.h>
 #include <ble/GattServer.h>
@@ -28,6 +27,10 @@ using std::copy;
 
 #ifndef DATASIZE
 #define DATASIZE 20
+#endif
+
+#ifndef CONFIGSIZE
+#define CONFIGSIZE 20
 #endif
 
 class PhyphoxBleEventHandler : public ble::Gap::EventHandler {

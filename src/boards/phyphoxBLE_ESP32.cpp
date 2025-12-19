@@ -1,4 +1,5 @@
 #if defined(ESP32) && !defined(ARDUINO_SENSEBOX_MCU_ESP32S2)
+#include "phyphoxBLE_common.h"
 #include "phyphoxBLE_ESP32.h"
 #include "Arduino.h"
 #include <stdio.h>
@@ -38,9 +39,9 @@ uint16_t PhyphoxBLE::currentConnections=0;
 bool     PhyphoxBLE::isSubscribed=false;
 
 uint8_t PhyphoxBLE::eventData[17]={0};
-int64_t PhyphoxBLE::experimentTime = NULL;
-int64_t PhyphoxBLE::systemTime = NULL;
-uint8_t PhyphoxBLE::eventType = NULL;
+int64_t PhyphoxBLE::experimentTime = 0;
+int64_t PhyphoxBLE::systemTime = 0;
+uint8_t PhyphoxBLE::eventType = 0;
 uint16_t PhyphoxBLE::MTU = 20;
 uint16_t PhyphoxBleExperiment::MTU = 20;
 
@@ -139,7 +140,6 @@ class MyDataDescCallback: public BLEDescriptorCallbacks {
           printer->println("descriptor write (data)");
         }
       #endif
-      uint8_t* rxValue = pDescriptor->getValue();
 
       if(pDescriptor->getLength() > 0){
         PhyphoxBLE::isSubscribed=true;

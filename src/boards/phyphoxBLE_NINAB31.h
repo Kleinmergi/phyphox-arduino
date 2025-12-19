@@ -1,7 +1,6 @@
 #ifndef PHYPHOXBLE_NINAB31_H
 #define PHYPHOXBLE_NINAB31_H
 
-#include <phyphoxBle.h>
 #include "phyphoxBleExperiment.h"
 #include "NINAB31serial.h"
 

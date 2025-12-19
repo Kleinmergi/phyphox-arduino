@@ -1,6 +1,7 @@
 #if defined(ARDUINO_SAMD_MKR1000) || defined(ARDUINO_SENSEBOX_MCU_ESP32S2)
 
-#include "phyphoxBle.h"
+#include "phyphoxBLE_common.h"
+#include "phyphoxBLE_NINAB31.h"
 #include "NINAB31serial.h"
 #include "Arduino.h"
 #include <stdio.h>

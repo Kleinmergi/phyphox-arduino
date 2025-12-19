@@ -1,7 +1,7 @@
 #ifndef PHYPHOXBLE_NANOIOT_H
 #define PHYPHOXBLE_NANOIOT_H
 
-#include <phyphoxBle.h>
+#include <ArduinoBLE.h>
 #include "phyphoxBleExperiment.h"
 
 class PhyphoxBLE

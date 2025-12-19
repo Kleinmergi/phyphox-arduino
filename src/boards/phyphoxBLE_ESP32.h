@@ -2,7 +2,6 @@
 #ifndef PHYPHOXBLE_ESP32_H
 #define PHYPHOXBLE_ESP32_H
 
-#include <phyphoxBle.h>
 #include <BLEDevice.h>
 #include <BLEUtils.h>
 #include <BLEServer.h>

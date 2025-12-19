@@ -1,6 +1,5 @@
 #include "phyphoxBleExperiment.h"
 #include "copyToMem.h"
-#include "phyphoxBle.h"
 
 int PhyphoxBleExperiment::numberOfChannels = 5;
 
@@ -154,7 +153,7 @@ void PhyphoxBleExperiment::getFirstBytes(char *buffArray, const char *DEVICENAME
 	strcat(buffArray, DEVICENAME);
 	
 	if(MTU!=20){
-		char add[10];
+		char add[13];
 		sprintf(add, "\" mtu=\"%i", MTU);
 		strcat(buffArray, add);
 	}

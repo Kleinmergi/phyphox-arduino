@@ -1,4 +1,5 @@
 #if defined(ARDUINO_ARCH_MBED)
+#include "phyphoxBLE_common.h"
 #include "phyphoxBLE_NRF52.h"
 
 const UUID PhyphoxBLE::phyphoxExperimentServiceUUID = UUID(phyphoxBleExperimentServiceUUID);
@@ -19,9 +20,9 @@ Thread PhyphoxBLE::transferExpThread;
 uint8_t PhyphoxBLE::data_package[20] = {0};
 uint8_t PhyphoxBLE::config_package[CONFIGSIZE] = {0};
 uint8_t PhyphoxBLE::eventData[17] = {0};
-int64_t PhyphoxBLE::experimentTime = NULL;
-int64_t PhyphoxBLE::systemTime = NULL;
-uint8_t PhyphoxBLE::eventType = NULL;
+int64_t PhyphoxBLE::experimentTime = 0;
+int64_t PhyphoxBLE::systemTime = 0;
+uint8_t PhyphoxBLE::eventType = 0;
 
 /*BLE stuff*/
 BLE& bleInstance = BLE::Instance(BLE::DEFAULT_INSTANCE);

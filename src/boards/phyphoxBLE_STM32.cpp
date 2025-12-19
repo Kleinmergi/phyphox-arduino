@@ -1,5 +1,6 @@
 #if defined(ARDUINO_ARCH_STM32)
 
+#include "phyphoxBLE_common.h"
 #include "phyphoxBLE_STM32.h"
 #include "Arduino.h"
 #include <stdio.h> 
