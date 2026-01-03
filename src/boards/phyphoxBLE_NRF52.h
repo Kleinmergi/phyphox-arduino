@@ -13,12 +13,12 @@
 #include <string>
 #include <AdvertisingParameters.h>
 #include <AdvertisingDataBuilder.h>
-#include <HardwareSerial.h>
+#include <Print.h>
 
 #include "phyphoxBleExperiment.h"
 
 #ifndef NDEBUG
-using arduino::HardwareSerial;
+using arduino::Print;
 #endif
 using events::EventQueue; 
 using rtos::Thread;
@@ -101,7 +101,7 @@ class PhyphoxBLE
 	static void schedule_ble_events(BLE::OnEventsToProcessCallbackContext *context);
 
 	#ifndef NDEBUG
-	static inline HardwareSerial* printer; //for debug purpose
+	static inline Print* printer; //for debug purpose
 	#endif
 	static uint8_t* data; //this pointer points to the data the user wants to write in the characteristic
 	static uint8_t* config;
@@ -124,7 +124,7 @@ class PhyphoxBLE
 	static void (*configHandler)();
 	static void (*experimentEventHandler)();
 
-    static void printXML(HardwareSerial*);
+    static void printXML(Print*);
 
     static void poll();
     static void poll(int timeout);
@@ -154,7 +154,7 @@ class PhyphoxBLE
 	static uint8_t eventType;
 
 	#ifndef NDEBUG
-	static void begin(HardwareSerial*); //for debug purpose
+	static void begin(Print*); //for debug purpose
 	static void output(const char*); //for debug purpose
 	static void output(const uint32_t);
 	#endif

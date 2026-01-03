@@ -77,7 +77,7 @@ class PhyphoxBLE
         static void eventCharacteristicHandler();
         static void (*experimentEventHandler)();
 
-        static void printXML(HardwareSerial*);
+        static void printXML(Print*);
 
         static void setMTU(uint16_t);
         static uint16_t MTU;
@@ -85,8 +85,8 @@ class PhyphoxBLE
         static void startTask();
         static void staticStartTask(void*);
 
-        static HardwareSerial* printer; //for debug purpose
-        static void begin(HardwareSerial*); //for debug purpose
+        static Print* printer; //for debug purpose
+        static void begin(Print*); //for debug purpose
 
         static uint16_t minConInterval;
         static uint16_t maxConInterval;

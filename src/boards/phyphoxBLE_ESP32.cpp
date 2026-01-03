@@ -14,7 +14,7 @@ uint8_t storage[16000];
 char *PhyphoxBLE::EXPARRAY=(char*)storage;
 uint8_t* PhyphoxBLE::p_exp = nullptr;
 size_t PhyphoxBLE::expLen = 0;
-HardwareSerial* PhyphoxBLE::printer =nullptr;
+Print* PhyphoxBLE::printer =nullptr;
 
 BLEServer *PhyphoxBLE::myServer;
 BLEService *PhyphoxBLE::phyphoxExperimentService;
@@ -48,10 +48,10 @@ uint16_t PhyphoxBleExperiment::MTU = 20;
 #if defined(CONFIG_BT_NIMBLE_ROLE_PERIPHERAL)
 class MyExpCallback: public BLECharacteristicCallbacks {
     private:
-      HardwareSerial* printer;
+      Print* printer;
 
     public:
-      MyExpCallback(HardwareSerial* hwPrint) {
+      MyExpCallback(Print* hwPrint) {
         printer = hwPrint;
       }
     private:
@@ -72,10 +72,10 @@ class MyExpCallback: public BLECharacteristicCallbacks {
 #else
 class MyExpDescCallback: public BLEDescriptorCallbacks {
     private:
-      HardwareSerial* printer;
+      Print* printer;
 
     public:
-      MyExpDescCallback(HardwareSerial* hwPrint) {
+      MyExpDescCallback(Print* hwPrint) {
         printer = hwPrint;
       }
     private:
@@ -101,10 +101,10 @@ class MyExpDescCallback: public BLEDescriptorCallbacks {
 #if defined(CONFIG_BT_NIMBLE_ROLE_PERIPHERAL)
 class MyDataCallback: public BLECharacteristicCallbacks {
     private:
-      HardwareSerial* printer;
+      Print* printer;
 
     public:
-      MyDataCallback(HardwareSerial* hwPrint) {
+      MyDataCallback(Print* hwPrint) {
         printer = hwPrint;
       }
 
@@ -125,10 +125,10 @@ class MyDataCallback: public BLECharacteristicCallbacks {
 #else
 class MyDataDescCallback: public BLEDescriptorCallbacks {
     private:
-      HardwareSerial* printer;
+      Print* printer;
 
     public:
-      MyDataDescCallback(HardwareSerial* hwPrint) {
+      MyDataDescCallback(Print* hwPrint) {
         printer = hwPrint;
       }
 
@@ -150,10 +150,10 @@ class MyDataDescCallback: public BLEDescriptorCallbacks {
 
 class MyEventCallback: public BLECharacteristicCallbacks {
   private:
-    HardwareSerial* printer;
+    Print* printer;
 
   public:
-    MyEventCallback(HardwareSerial* hwPrint) {
+    MyEventCallback(Print* hwPrint) {
         printer = hwPrint;
     }
     private:
@@ -170,10 +170,10 @@ class MyEventCallback: public BLECharacteristicCallbacks {
 
 class MyCharCallback: public BLECharacteristicCallbacks {
   private:
-    HardwareSerial* printer;
+    Print* printer;
 
   public:
-    MyCharCallback(HardwareSerial* hwPrint) {
+    MyCharCallback(Print* hwPrint) {
         printer = hwPrint;
     }
   private:
@@ -191,10 +191,10 @@ class MyCharCallback: public BLECharacteristicCallbacks {
 class MyServerCallbacks: public BLEServerCallbacks {
 
 private:
-    HardwareSerial* printer;
+    Print* printer;
 
 public:
-    MyServerCallbacks(HardwareSerial* hwPrint) {
+    MyServerCallbacks(Print* hwPrint) {
         printer = hwPrint;
     }
 
@@ -562,7 +562,7 @@ void PhyphoxBLE::disconnected(){
 }
 
 
-void PhyphoxBLE::begin(HardwareSerial* hwPrint)
+void PhyphoxBLE::begin(Print* hwPrint)
 {
   #ifdef DEBUG
 	printer = hwPrint;
@@ -571,7 +571,7 @@ void PhyphoxBLE::begin(HardwareSerial* hwPrint)
   #endif
 }
 
-void PhyphoxBLE::printXML(HardwareSerial* printer){
+void PhyphoxBLE::printXML(Print* printer){
   printer->println("");
   for(int i =0; i<expLen;i++){
       char CHAR = EXPARRAY[i];

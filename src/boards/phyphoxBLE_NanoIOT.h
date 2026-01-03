@@ -71,7 +71,7 @@ class PhyphoxBLE
 
         static uint8_t eventData[17];
 
-        static void printXML(HardwareSerial*);
+        static void printXML(Print*);
 
 };
 

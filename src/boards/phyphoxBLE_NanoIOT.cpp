@@ -303,7 +303,7 @@ void PhyphoxBLE::eventCharacteristicWritten(BLEDevice central, BLECharacteristic
   }
 }
 
-void PhyphoxBLE::printXML(HardwareSerial* printer){
+void PhyphoxBLE::printXML(Print* printer){
   printer->println("");
   for(int i =0; i<expLen;i++){
       char CHAR = EXPARRAY[i];

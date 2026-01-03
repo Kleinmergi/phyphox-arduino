@@ -89,7 +89,7 @@ void PhyphoxBleEventHandler::onConnectionComplete(const ble::ConnectionCompleteE
 }
 
 #ifndef NDEBUG
-void PhyphoxBLE::begin(HardwareSerial* hwPrint)
+void PhyphoxBLE::begin(Print* hwPrint)
 {
 	 printer = hwPrint;
       if(printer)
@@ -110,7 +110,7 @@ void PhyphoxBLE::output(const uint32_t num)
 
 #endif
 
-void PhyphoxBLE::printXML(HardwareSerial* printer){
+void PhyphoxBLE::printXML(Print* printer){
   printer->println("");
   for(int i =0; i<expLen;i++){
       char CHAR = EXPARRAY[i];
