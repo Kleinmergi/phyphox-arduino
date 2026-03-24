@@ -4,9 +4,9 @@
 void PhyphoxBleExperiment::Toggle::setDefault(bool d)
 {
     if (d)
-        copyToMem(&DEFAULTVALUE, "true");
+        copyToMem(&DEFAULTVALUE, "1");
     else
-        copyToMem(&DEFAULTVALUE, "false");
+        copyToMem(&DEFAULTVALUE, "0");
 }
 
 void PhyphoxBleExperiment::Toggle::setOutputChannel(int b)

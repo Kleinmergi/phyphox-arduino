@@ -70,10 +70,10 @@ void PhyphoxBleExperiment::Dropdown::getBytes(char *buffArray)
     {
         if (OPTIONLABELS[i] != NULL)
         {
-            strcat(buffArray, "\t\t\t<map label=\"");
-            strcat(buffArray, OPTIONLABELS[i]);
-            strcat(buffArray, "\">");
+            strcat(buffArray, "\t\t\t<map value=\"");
             strcat(buffArray, OPTIONVALUES[i]);
+            strcat(buffArray, "\">");
+            strcat(buffArray, OPTIONLABELS[i]);
             strcat(buffArray, "</map>\n");
         }
     }

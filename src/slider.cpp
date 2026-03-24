@@ -61,21 +61,27 @@ void PhyphoxBleExperiment::Slider::getBytes(char *buffArray)
     {
         strcat(buffArray, " label=\"slider\"");
     }
+    if (VALUE)
+    {
+        strcat(buffArray, " default=\"");
+        strcat(buffArray, VALUE);
+        strcat(buffArray, "\"");
+    }
     if (MIN)
     {
-        strcat(buffArray, " min=\"");
+        strcat(buffArray, " minValue=\"");
         strcat(buffArray, MIN);
         strcat(buffArray, "\"");
     }
     if (MAX)
     {
-        strcat(buffArray, " max=\"");
+        strcat(buffArray, " maxValue=\"");
         strcat(buffArray, MAX);
         strcat(buffArray, "\"");
     }
     if (STEP)
     {
-        strcat(buffArray, " step=\"");
+        strcat(buffArray, " stepSize=\"");
         strcat(buffArray, STEP);
         strcat(buffArray, "\"");
     }
@@ -94,11 +100,5 @@ void PhyphoxBleExperiment::Slider::getBytes(char *buffArray)
         strcat(buffArray, OUTPUTBUFFER);
     }
     strcat(buffArray, "</output>\n");
-    if (VALUE)
-    {
-        strcat(buffArray, "\t\t\t<value>");
-        strcat(buffArray, VALUE);
-        strcat(buffArray, "</value>\n");
-    }
     strcat(buffArray, "\t\t</slider>\n");
 }

@@ -45,7 +45,7 @@ void PhyphoxBleExperiment::Button::getBytes(char *buffArray)
         strcat(buffArray, XMLAttribute);
     }
     strcat(buffArray, ">\n");
-    strcat(buffArray, "\t\t\t<input>");
+    strcat(buffArray, "\t\t\t<input type=\"value\">");
     if (!VALUE)
     {
         strcat(buffArray, "1");
