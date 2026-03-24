@@ -1,18 +1,26 @@
 #include <phyphoxBle.h>
 
 // Beispiel fuer ESP32: Slider steuert eine PWM-Spannung, Button toggelt LED an/aus.
-const int voltagePin = 25; // PWM-/DAC-faehiger Pin beim ESP32
+// Falls dein Board andere Pins braucht, diese beiden Werte anpassen:
+const int voltagePin = 25; // Viele ESP32-Boards: GPIO25 ist gut messbar (PWM/DAC-faehig)
+#ifdef LED_BUILTIN
 const int ledPin = LED_BUILTIN;
+#else
+const int ledPin = 2; // Fallback fuer Boards ohne LED_BUILTIN-Definition
+#endif
 
 float buttonValue = 0.0;
 float sliderVoltage = 0.0;
 float lastButtonValue = 0.0;
 bool ledEnabled = false;
+uint32_t configUpdateCount = 0;
+unsigned long lastDebugPrintMs = 0;
 
 void onConfigUpdate()
 {
   // Reihenfolge: CB1=Button, CB2=Slider
   PhyphoxBLE::read(buttonValue, sliderVoltage);
+  configUpdateCount++;
 }
 
 void setup()
@@ -20,6 +28,7 @@ void setup()
   Serial.begin(115200);
   pinMode(voltagePin, OUTPUT);
   pinMode(ledPin, OUTPUT);
+  digitalWrite(ledPin, LOW);
 
   PhyphoxBLE::start("voltage-led-control");
 
@@ -53,10 +62,16 @@ void setup()
   voltageValue.setPrecision(2);
   voltageValue.setChannel(1);
 
+  PhyphoxBleExperiment::Value sliderDebugValue;
+  sliderDebugValue.setLabel("Slider roh");
+  sliderDebugValue.setPrecision(2);
+  sliderDebugValue.setChannel(2);
+
   controlView.addElement(info);
   controlView.addElement(ledButton);
   controlView.addElement(voltageSlider);
   controlView.addElement(voltageValue);
+  controlView.addElement(sliderDebugValue);
 
   experiment.addView(controlView);
   PhyphoxBLE::addExperiment(experiment);
@@ -86,12 +101,26 @@ void loop()
   digitalWrite(ledPin, ledEnabled ? HIGH : LOW);
 
   // Channel 1 -> Value in phyphox
-  PhyphoxBLE::write(limitedVoltage);
+  // Channel 2 -> Rohwert vom Slider fuer Debug-Anzeige
+  PhyphoxBLE::write(limitedVoltage, sliderVoltage);
 
-  Serial.print("LED=");
-  Serial.print(ledEnabled ? "ON" : "OFF");
-  Serial.print("  Voltage=");
-  Serial.println(limitedVoltage, 2);
+  unsigned long now = millis();
+  if (now - lastDebugPrintMs >= 250)
+  {
+    lastDebugPrintMs = now;
+    Serial.print("cfg#=");
+    Serial.print(configUpdateCount);
+    Serial.print("  btn=");
+    Serial.print(buttonValue, 2);
+    Serial.print("  sliderRaw=");
+    Serial.print(sliderVoltage, 2);
+    Serial.print("  limitedV=");
+    Serial.print(limitedVoltage, 2);
+    Serial.print("  pwm=");
+    Serial.print((int)pwm);
+    Serial.print("  led=");
+    Serial.println(ledEnabled ? "ON" : "OFF");
+  }
 
   PhyphoxBLE::poll();
   delay(50);

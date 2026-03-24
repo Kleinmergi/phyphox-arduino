@@ -155,6 +155,7 @@ This example shows a practical hardware-control setup:
 - A `slider` controls a PWM output voltage setpoint (0..3.3V) on an ESP32 pin.
 - A `button` toggles an LED on and off (edge-triggered in the sketch).
 - Incoming control values are received using `PhyphoxBLE::configHandler` + `PhyphoxBLE::read(...)`.
+- The sketch prints a detailed serial debug line (`cfg#`, button value, slider raw value, voltage, PWM, LED state) every 250ms to help troubleshooting on real hardware.
 
 ### getDataFromSmartphone.ino
 
@@ -188,4 +189,3 @@ This library is released under the GNU Lesser General Public Licence v3.0 (or ne
 ## Contact
 
 Contact us any time at contact@phyphox.org and learn more about phyphox on https://phyphox.org.
-
