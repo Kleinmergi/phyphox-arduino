@@ -100,7 +100,7 @@ void PhyphoxBleExperiment::getFirstBytes(char *buffArray, const char *DEVICENAME
 	int errors = 0;
 
 	//header
-	strcat(buffArray, "<phyphox version=\"1.15\">\n");
+	strcat(buffArray, "<phyphox version=\"1.19\">\n");
 	//build title
 	strcat(buffArray,"<title>");
 	if (!TITLE)  {strcat(buffArray,"Arduino-Experiment");} else {strcat(buffArray,TITLE);}
