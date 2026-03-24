@@ -295,7 +295,7 @@ class PhyphoxBleExperiment {
 		void setXMLAttribute(const char *);
 		void getBytes(char *);
 
-		char* OUTPUT = NULL;
+		char* OUTPUTBUFFER = NULL;
 		char* VALUE = NULL;
 		char* XMLAttribute = NULL;
 	};
@@ -321,7 +321,7 @@ class PhyphoxBleExperiment {
 		char* MAX = NULL;
 		char* STEP = NULL;
 		char* VALUE = NULL;
-		char* OUTPUT = NULL;
+		char* OUTPUTBUFFER = NULL;
 		char* XMLAttribute = NULL;
 	};
 
@@ -339,8 +339,8 @@ class PhyphoxBleExperiment {
 		void setXMLAttribute(const char *);
 		void getBytes(char *);
 
-		char* DEFAULT = NULL;
-		char* OUTPUT = NULL;
+		char* DEFAULTVALUE = NULL;
+		char* OUTPUTBUFFER = NULL;
 		char* XMLAttribute = NULL;
 	};
 
@@ -358,7 +358,7 @@ class PhyphoxBleExperiment {
 		void setXMLAttribute(const char *);
 		void getBytes(char *);
 
-		char* OUTPUT = NULL;
+		char* OUTPUTBUFFER = NULL;
 		char* XMLAttribute = NULL;
 		char* OPTIONLABELS[phyphoxBleNChannel] = {NULL};
 		char* OPTIONVALUES[phyphoxBleNChannel] = {NULL};

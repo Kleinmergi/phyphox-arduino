@@ -6,7 +6,7 @@ void PhyphoxBleExperiment::Dropdown::setOutputChannel(int b)
     ERROR = ERROR.MESSAGE == NULL ? err_checkUpper(b, 5, "setOutputChannel") : ERROR;
     char tmp[20];
     sprintf(tmp, "CB%i", b);
-    copyToMem(&OUTPUT, tmp);
+    copyToMem(&OUTPUTBUFFER, tmp);
 }
 
 void PhyphoxBleExperiment::Dropdown::setChannel(int b)
@@ -56,13 +56,13 @@ void PhyphoxBleExperiment::Dropdown::getBytes(char *buffArray)
     }
     strcat(buffArray, ">\n");
     strcat(buffArray, "\t\t\t<output>");
-    if (!OUTPUT)
+    if (!OUTPUTBUFFER)
     {
         strcat(buffArray, "CB1");
     }
     else
     {
-        strcat(buffArray, OUTPUT);
+        strcat(buffArray, OUTPUTBUFFER);
     }
     strcat(buffArray, "</output>\n");
 
