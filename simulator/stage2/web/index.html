@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Stage-2 Bridge UI</title>
+  <link rel="manifest" href="manifest.json" />
+  <style>
+    body{font-family:Arial,sans-serif;margin:16px;background:#f7f7f9}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+    .card{background:#fff;border:1px solid #ddd;border-radius:10px;padding:12px}
+    .row{display:flex;gap:8px;align-items:center}
+    input{width:100%}
+    table{width:100%;border-collapse:collapse}
+    td,th{border-bottom:1px solid #eee;padding:6px;text-align:left}
+    pre{background:#111;color:#d8ffd8;padding:8px;border-radius:8px;max-height:260px;overflow:auto}
+  </style>
+</head>
+<body>
+  <h1>Stage-2 Bridge UI</h1>
+  <p id="status">verbinde...</p>
+  <div class="grid">
+    <section class="card">
+      <h2>CB Controls</h2>
+      <label>CB1 Button<input id="cb1" type="number" min="0" max="1" step="1" /></label>
+      <label>CB2 Slider [V]<input id="cb2" type="range" min="0" max="3.3" step="0.05" /></label>
+      <label>CB3<input id="cb3" type="number" step="0.1" /></label>
+      <label>CB4<input id="cb4" type="number" step="0.1" /></label>
+      <label>CB5<input id="cb5" type="number" step="0.1" /></label>
+      <div class="row"><button id="impulse">Button-Impuls</button><button id="export">Export .phyphox</button></div>
+    </section>
+
+    <section class="card">
+      <h2>Sensor Inputs</h2>
+      <label>weight [g]<input id="weight" type="number" step="1" /></label>
+      <label>pulseRate [1/s]<input id="pulseRate" type="number" step="1" /></label>
+      <label>current [mA]<input id="current" type="number" step="1" /></label>
+      <label>voltage [V]<input id="voltage" type="number" step="0.01" /></label>
+      <label>motorCmdOverride [V]<input id="motorCmdOverride" type="number" step="0.05" /></label>
+    </section>
+
+    <section class="card">
+      <h2>CH Out</h2>
+      <table><thead><tr><th>CH</th><th>Wert</th></tr></thead><tbody id="out"></tbody></table>
+    </section>
+
+    <section class="card">
+      <h2>Log</h2>
+      <pre id="log"></pre>
+    </section>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
