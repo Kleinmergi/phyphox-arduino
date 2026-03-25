@@ -3,92 +3,65 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>phyphox Stage-1 Simulator</title>
+  <title>phyphox INO Simulator (Stage-1)</title>
   <style>
     body { font-family: Arial, sans-serif; margin: 20px; background:#f7f7f9; color:#222; }
-    h1 { margin-top:0; }
-    .grid { display:grid; grid-template-columns: repeat(auto-fit,minmax(280px,1fr)); gap:16px; }
-    .card { background:white; border:1px solid #ddd; border-radius:10px; padding:14px; box-shadow:0 1px 3px rgba(0,0,0,.05); }
-    label { display:block; margin-top:8px; font-size:.92rem; }
-    input[type="range"], input[type="number"] { width:100%; }
-    .row { display:flex; gap:8px; align-items:center; }
-    button { padding:8px 12px; border-radius:8px; border:1px solid #888; background:#fff; cursor:pointer; }
-    button.primary { background:#2563eb; color:white; border-color:#1d4ed8; }
-    pre { background:#111; color:#d8ffd8; padding:10px; border-radius:8px; min-height:160px; max-height:280px; overflow:auto; }
-    table { width:100%; border-collapse:collapse; font-size:.9rem; }
-    td, th { border-bottom:1px solid #eee; padding:6px; text-align:left; }
-    .pill { display:inline-block; border-radius:999px; padding:2px 8px; background:#e2e8f0; font-size:.8rem; }
+    .grid { display:grid; grid-template-columns: repeat(auto-fit,minmax(320px,1fr)); gap:16px; }
+    .card { background:white; border:1px solid #ddd; border-radius:10px; padding:14px; }
+    textarea { width:100%; min-height:220px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+    label { display:block; margin-top:8px; }
+    input[type="number"] { width:100%; }
+    table { width:100%; border-collapse:collapse; }
+    td,th { padding:6px; border-bottom:1px solid #eee; text-align:left; }
+    button { padding:8px 12px; border-radius:8px; border:1px solid #888; background:#fff; cursor:pointer; margin-right:8px; }
+    button.primary { background:#2563eb; color:#fff; border-color:#1d4ed8; }
+    pre { background:#111; color:#d8ffd8; padding:10px; border-radius:8px; max-height:220px; overflow:auto; }
+    .hint { font-size: .9rem; color:#555; }
   </style>
 </head>
 <body>
-  <h1>phyphox Stage-1 Simulator <span class="pill">ohne BLE</span></h1>
-  <p>
-    Simuliert Messwerte (<code>CH1..CH5</code>) und empfangene App-Werte (<code>CB1..CB5</code>)
-    und exportiert eine passende <code>.phyphox</code>-Datei.
+  <h1>INO -> phyphox Simulator (Stage-1, ohne BLE)</h1>
+  <p class="hint">
+    1) INO-Code einfügen, 2) <b>Analyse</b>, 3) erkannte <code>read(...)</code> als Eingaben und
+    <code>write(...)</code> als Ausgaben prüfen, 4) <code>.phyphox</code> exportieren.
   </p>
 
   <div class="grid">
     <section class="card">
-      <h2>Empfangene phyphox-Werte (CB)</h2>
-      <label>CB1 Motor-Button (0/1)
-        <input id="cb1" type="number" min="0" max="1" step="1" value="0" />
-      </label>
-      <label>CB2 Motor-Slider Spannung [V]
-        <input id="cb2" type="range" min="0" max="3.3" step="0.05" value="0" oninput="cb2n.value=this.value" />
-        <input id="cb2n" type="number" min="0" max="3.3" step="0.05" value="0" oninput="cb2.value=this.value" />
-      </label>
-      <label>CB3 Reserve
-        <input id="cb3" type="number" step="0.1" value="0" />
-      </label>
-      <label>CB4 Reserve
-        <input id="cb4" type="number" step="0.1" value="0" />
-      </label>
-      <label>CB5 Reserve
-        <input id="cb5" type="number" step="0.1" value="0" />
-      </label>
-      <div class="row" style="margin-top:10px;">
-        <button id="btnToggle">Motor-Button Trigger (CB1=1 Impuls)</button>
+      <h2>1) INO-Code</h2>
+      <textarea id="inoCode">void onConfigUpdate() {
+  PhyphoxBLE::read(motorButton, motorSlider, mode);
+}
+
+void loop() {
+  float weight = 123.4;
+  float current = 220.0;
+  PhyphoxBLE::write(weight, current, motorSlider);
+}</textarea>
+      <div style="margin-top:10px;">
+        <button class="primary" id="btnAnalyze">Analyse</button>
+        <button id="btnExport">.phyphox exportieren</button>
       </div>
+      <p class="hint">Parser-Regel: Erkannt werden Aufrufe von <code>PhyphoxBLE::read(...)</code> und <code>PhyphoxBLE::write(...)</code>.</p>
     </section>
 
     <section class="card">
-      <h2>Simulierte Sensorwerte</h2>
-      <label>Gewicht HX711 [g]
-        <input id="weight" type="range" min="0" max="5000" step="1" value="250" oninput="weightN.value=this.value" />
-        <input id="weightN" type="number" min="0" max="5000" step="1" value="250" oninput="weight.value=this.value" />
-      </label>
-      <label>Pulsrate Lichtschranke [Pulse/s]
-        <input id="pulseRate" type="range" min="0" max="200" step="1" value="5" oninput="pulseRateN.value=this.value" />
-        <input id="pulseRateN" type="number" min="0" max="200" step="1" value="5" oninput="pulseRate.value=this.value" />
-      </label>
-      <label>INA219 Strom [mA]
-        <input id="current" type="range" min="0" max="3000" step="1" value="120" oninput="currentN.value=this.value" />
-        <input id="currentN" type="number" min="0" max="3000" step="1" value="120" oninput="current.value=this.value" />
-      </label>
-      <label>INA219 Spannung [V]
-        <input id="voltage" type="range" min="0" max="24" step="0.01" value="12.00" oninput="voltageN.value=this.value" />
-        <input id="voltageN" type="number" min="0" max="24" step="0.01" value="12.00" oninput="voltage.value=this.value" />
-      </label>
-      <label>Motor Sollspannung [V] (optional override)
-        <input id="motorCmd" type="number" min="0" max="3.3" step="0.05" value="0.0" />
-      </label>
+      <h2>2) Erkannte Eingänge (von phyphox -> read)</h2>
+      <div id="rxFields"></div>
     </section>
 
     <section class="card">
-      <h2>Ausgehende Messkanäle (CH)</h2>
+      <h2>3) Erkannte Ausgänge (zu phyphox -> write)</h2>
       <table>
-        <thead><tr><th>Kanal</th><th>Bedeutung</th><th>Wert</th></tr></thead>
-        <tbody id="channelTable"></tbody>
+        <thead><tr><th>Kanal</th><th>Variable</th><th>Wert (simuliert)</th></tr></thead>
+        <tbody id="txTable"></tbody>
       </table>
-      <p><small>Mapping: CH1 Gewicht, CH2 Pulse, CH3 Strom, CH4 Spannung, CH5 Motor-Soll.</small></p>
-      <div class="row">
-        <button class="primary" id="btnExport">.phyphox exportieren</button>
-        <button id="btnSnapshot">Snapshot ins Log</button>
-      </div>
     </section>
 
     <section class="card">
-      <h2>Live-Log</h2>
+      <h2>Live JSON</h2>
+      <pre id="jsonOut"></pre>
+      <h3>Log</h3>
       <pre id="log"></pre>
     </section>
   </div>

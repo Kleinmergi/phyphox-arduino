@@ -161,11 +161,12 @@ This example shows a practical hardware-control setup:
 
 ### stage1 (ohne BLE)
 
-In `simulator/stage1` there is a simple browser-based simulator for rapid iteration:
+In `simulator/stage1` there is an INO-driven browser simulator:
 
-- set simulated sensor values (HX711, light barrier pulses, INA219 current/voltage)
-- inspect received control values (`CB1..CB5`) and outgoing channels (`CH1..CH5`)
-- export a `.phyphox` file to load on another device
+- paste an `.ino` sketch
+- automatically detect `PhyphoxBLE::read(...)` and `PhyphoxBLE::write(...)` signatures
+- render detected read variables as input fields and write variables as output table
+- export a generated `.phyphox` file based on detected channels
 
 ### stage2 (PWA + Bridge Skeleton)
 

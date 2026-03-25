@@ -1,11 +1,12 @@
-# Stage-1 phyphox Simulator (ohne BLE)
+# Stage-1 INO Simulator (ohne BLE)
 
-Dieser Simulator ist die erste Ausbaustufe:
+Diese Version ist auf deinen Workflow ausgerichtet:
 
-- Einstellen von simulierten Sensorwerten auf dem sendenden Geraet
-- Anzeige der empfangenen phyphox-Werte (CB1..CB5)
-- Anzeige der ausgehenden Messkanaele (CH1..CH5)
-- Export einer `.phyphox`-Datei zur Nutzung auf einem anderen Geraet
+1. INO-Code einfügen
+2. `PhyphoxBLE::read(...)` / `PhyphoxBLE::write(...)` automatisch erkennen
+3. erkannte Eingänge als Eingabefelder darstellen
+4. erkannte Ausgänge als Text-/Wertausgabe darstellen
+5. `.phyphox` exportieren
 
 ## Start lokal
 
@@ -14,20 +15,17 @@ cd simulator/stage1
 python3 -m http.server 8080
 ```
 
-Dann im Browser aufrufen:
+Dann im Browser aufrufen: `http://localhost:8080`
 
-`http://localhost:8080`
+## Parsing-Regeln
 
-## Mapping
+- read-Erkennung: `PhyphoxBLE::read(a, b, c);`
+- write-Erkennung: `PhyphoxBLE::write(x, y, z);`
+- Kanäle werden in Reihenfolge zugewiesen:
+  - `read` -> `CB1..CBn`
+  - `write` -> `CH1..CHn`
 
-- CB1: Motor-Button Trigger
-- CB2: Motor-Slider (Spannung)
-- CH1: Gewicht (HX711)
-- CH2: Pulszaehler (Lichtschranke)
-- CH3: Strom (INA219)
-- CH4: Spannung (INA219)
-- CH5: Motor-Sollspannung
+## Einschränkung
 
-## Hinweis
-
-Dies ist bewusst **ohne BLE** implementiert. In Stufe 2 folgt eine BLE-Bridge/PWA-Integration.
+Es wird **kein C++ ausgeführt**. Der Simulator erkennt Signaturen und stellt Felder/Ausgaben bereit.
+Die echte BLE-Kommunikation folgt in Stage-2.
