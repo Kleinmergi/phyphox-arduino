@@ -8,7 +8,7 @@ Stage-2 baut auf Stage-1 auf und trennt:
 ## Enthalten
 
 - `bridge/server.js`: HTTP + WebSocket + Zustandsmodell + `.phyphox`-Export
-- `web/`: PWA-faehiges Frontend mit Live-Controls fuer CB/Sensorwerte und CH-Ausgabe
+- `web/`: PWA-faehiges Frontend mit INO-Analyse (`read/write`) und dynamischen CB/CH-Feldern
 - `package.json`: Startskripte
 
 ## Start (Mock-Modus)
@@ -26,4 +26,7 @@ Dann im Browser aufrufen:
 ## Aktueller Stand
 
 - Voll funktionsfaehiger Stage-2 Datenfluss **ohne echte BLE-Kopplung**
+- INO-Signaturerkennung im Bridge-Flow:
+  - `PhyphoxBLE::read(...)` -> dynamische Eingabefelder (`CB`)
+  - `PhyphoxBLE::write(...)` -> dynamische Text-/Wertausgabe (`CH`)
 - BLE-Anbindung ist als naechster Plug-in-Schritt vorgesehen (Bridge-Skeleton bleibt stabil)

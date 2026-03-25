@@ -19,8 +19,48 @@ const state = {
     voltage: 12,
     motorCmdOverride: 0
   },
-  lastTickMs: Date.now()
+  lastTickMs: Date.now(),
+  mappings: {
+    inputs: [{ name: 'motorButton', channel: 1 }, { name: 'motorSlider', channel: 2 }],
+    outputs: [{ name: 'weight', channel: 1 }, { name: 'pulseCounter', channel: 2 }, { name: 'current', channel: 3 }, { name: 'voltage', channel: 4 }, { name: 'motorCmd', channel: 5 }]
+  }
 };
+
+function uniqOrdered(arr) {
+  const seen = new Set();
+  const out = [];
+  for (const a of arr) {
+    if (!seen.has(a)) {
+      seen.add(a);
+      out.push(a);
+    }
+  }
+  return out;
+}
+
+function splitArgs(argString) {
+  return argString
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean)
+    .map((s) => s.replace(/^&/, ''));
+}
+
+function parseIno(code) {
+  const readVars = [];
+  const writeVars = [];
+  const readRegex = /PhyphoxBLE::read\s*\(([^)]*)\)\s*;/g;
+  const writeRegex = /PhyphoxBLE::write\s*\(([^)]*)\)\s*;/g;
+
+  let m;
+  while ((m = readRegex.exec(code)) !== null) readVars.push(...splitArgs(m[1]));
+  while ((m = writeRegex.exec(code)) !== null) writeVars.push(...splitArgs(m[1]));
+
+  return {
+    inputs: uniqOrdered(readVars).slice(0, 5).map((name, i) => ({ name, channel: i + 1 })),
+    outputs: uniqOrdered(writeVars).slice(0, 5).map((name, i) => ({ name, channel: i + 1 }))
+  };
+}
 
 function updateModel() {
   const now = Date.now();
@@ -53,25 +93,16 @@ function buildPhyphoxXml() {
   <description>Bridge export (Stage-2).</description>
   <data-containers>
     <container size="0" static="false">CH0</container>
-    <container size="0" static="false">CH1</container>
-    <container size="0" static="false">CH2</container>
-    <container size="0" static="false">CH3</container>
-    <container size="0" static="false">CH4</container>
-    <container size="0" static="false">CH5</container>
-    <container size="0" static="false">CB1</container>
-    <container size="0" static="false">CB2</container>
-    <container size="0" static="false">CB3</container>
-    <container size="0" static="false">CB4</container>
-    <container size="0" static="false">CB5</container>
+    ${state.mappings.outputs.map((o) => `<container size="0" static="false">CH${o.channel}</container>`).join('\n    ')}
+    ${state.mappings.inputs.map((i) => `<container size="0" static="false">CB${i.channel}</container>`).join('\n    ')}
   </data-containers>
   <analysis></analysis>
   <views>
     <view label="Bridge Data">
-      <value label="Gewicht" unit="g"><input>CH1</input></value>
-      <value label="Pulse" unit="count"><input>CH2</input></value>
-      <value label="Strom" unit="mA"><input>CH3</input></value>
-      <value label="Spannung" unit="V"><input>CH4</input></value>
-      <value label="Motor Soll" unit="V"><input>CH5</input></value>
+      ${state.mappings.outputs.map((o) => `<value label="${o.name}"><input>CH${o.channel}</input></value>`).join('\n      ')}
+    </view>
+    <view label="Read Inputs">
+      ${state.mappings.inputs.map((i) => `<value label="${i.name}"><input>CB${i.channel}</input></value>`).join('\n      ')}
     </view>
   </views>
 </phyphox>`;
@@ -84,7 +115,8 @@ function toPayload() {
     cb: state.cb,
     ch: state.ch,
     sensors: state.sensors,
-    motorEnabled: state.motorEnabled
+    motorEnabled: state.motorEnabled,
+    mappings: state.mappings
   };
 }
 
@@ -137,6 +169,13 @@ wss.on('connection', (ws) => {
       state.cb[data.index] = Number(data.value) || 0;
     } else if (data.type === 'setSensor' && data.key in state.sensors) {
       state.sensors[data.key] = Number(data.value) || 0;
+    } else if (data.type === 'setInoCode') {
+      const parsed = parseIno(String(data.code || ''));
+      state.mappings = parsed;
+      for (let i = 1; i <= 5; i++) {
+        state.cb[i] = 0;
+        state.ch[i] = 0;
+      }
     } else if (data.type === 'buttonImpulse') {
       state.cb[1] = 1;
       setTimeout(() => { state.cb[1] = 0; }, 120);

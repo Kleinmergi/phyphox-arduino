@@ -174,7 +174,8 @@ In `simulator/stage2` there is a stage-2 setup with:
 
 - browser/PWA frontend
 - host bridge process via WebSocket
-- live state sync for `CB1..CB5` and `CH1..CH5`
+- INO-signature parsing for `PhyphoxBLE::read(...)` / `PhyphoxBLE::write(...)`
+- dynamic live state sync for mapped `CB`/`CH` channels
 - `.phyphox` export from the bridge
 
 The current stage-2 implementation runs in mock/skeleton mode and is prepared for a follow-up BLE peripheral integration.
