@@ -157,6 +157,15 @@ This example shows a practical hardware-control setup:
 - Incoming control values are received using `PhyphoxBLE::configHandler` + `PhyphoxBLE::read(...)`.
 - The sketch prints a detailed serial debug line (`cfg#`, button value, slider raw value, voltage, PWM, LED state) every 250ms to help troubleshooting on real hardware.
 
+### as5600Bmp280LedControl.ino
+
+This example combines sensors and UI controls in multiple views:
+
+- View 1: pressure over temperature (BMP280)
+- View 2: absolute angle value (AS5600)
+- View 3: angle over time graph (AS5600)
+- View 4: LED brightness control with button (oscillation on/off) + slider (brightness)
+
 ## Simulator
 
 ### stage1 (ohne BLE)
