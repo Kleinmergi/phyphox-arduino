@@ -1,0 +1,13 @@
+{
+  "name": "phyphox-stage2-bridge",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Stage-2 bridge for phyphox simulator (Web UI + host BLE bridge skeleton)",
+  "scripts": {
+    "start": "node bridge/server.js",
+    "start:mock": "STAGE2_MOCK=1 node bridge/server.js"
+  },
+  "dependencies": {
+    "ws": "^8.18.0"
+  }
+}

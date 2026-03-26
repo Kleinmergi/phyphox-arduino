@@ -250,6 +250,16 @@ class PhyphoxBleExperiment {
 	private:
 	};
 
+
+	class Info : public InfoField
+	{
+	public:
+		Info(){};
+		Info(const Info &) = delete;
+		Info &operator=(const Info &) = delete;
+		~Info() = default;
+	};
+
 	class Separator : public Element
 	{
 	public:
@@ -268,6 +278,90 @@ class PhyphoxBleExperiment {
 		char* XMLAttribute = NULL;
 
 	private:
+	};
+
+
+	class Button : public Element
+	{
+	public:
+		Button(){};
+		Button(const Button &) = delete;
+		Button &operator=(const Button &) = delete;
+		~Button() = default;
+
+		void setOutputChannel(int);
+		void setChannel(int);
+		void setValue(float);
+		void setXMLAttribute(const char *);
+		void getBytes(char *);
+
+		char* OUTPUTBUFFER = NULL;
+		char* VALUE = NULL;
+		char* XMLAttribute = NULL;
+	};
+
+	class Slider : public Element
+	{
+	public:
+		Slider(){};
+		Slider(const Slider &) = delete;
+		Slider &operator=(const Slider &) = delete;
+		~Slider() = default;
+
+		void setMin(float);
+		void setMax(float);
+		void setStep(float);
+		void setValue(float);
+		void setOutputChannel(int);
+		void setChannel(int);
+		void setXMLAttribute(const char *);
+		void getBytes(char *);
+
+		char* MIN = NULL;
+		char* MAX = NULL;
+		char* STEP = NULL;
+		char* VALUE = NULL;
+		char* OUTPUTBUFFER = NULL;
+		char* XMLAttribute = NULL;
+	};
+
+	class Toggle : public Element
+	{
+	public:
+		Toggle(){};
+		Toggle(const Toggle &) = delete;
+		Toggle &operator=(const Toggle &) = delete;
+		~Toggle() = default;
+
+		void setDefault(bool);
+		void setOutputChannel(int);
+		void setChannel(int);
+		void setXMLAttribute(const char *);
+		void getBytes(char *);
+
+		char* DEFAULTVALUE = NULL;
+		char* OUTPUTBUFFER = NULL;
+		char* XMLAttribute = NULL;
+	};
+
+	class Dropdown : public Element
+	{
+	public:
+		Dropdown(){};
+		Dropdown(const Dropdown &) = delete;
+		Dropdown &operator=(const Dropdown &) = delete;
+		~Dropdown() = default;
+
+		void setOutputChannel(int);
+		void setChannel(int);
+		void addOption(const char *, float);
+		void setXMLAttribute(const char *);
+		void getBytes(char *);
+
+		char* OUTPUTBUFFER = NULL;
+		char* XMLAttribute = NULL;
+		char* OPTIONLABELS[phyphoxBleNChannel] = {NULL};
+		char* OPTIONVALUES[phyphoxBleNChannel] = {NULL};
 	};
 
 	class Value : public Element

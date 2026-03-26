@@ -1,0 +1,8 @@
+{
+  "name": "phyphox stage2 bridge",
+  "short_name": "stage2-bridge",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f7f7f9",
+  "theme_color": "#2563eb"
+}

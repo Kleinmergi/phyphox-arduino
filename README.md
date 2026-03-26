@@ -26,6 +26,8 @@ Phyphox is an open source app that has been developed at the RWTH Aachen Univers
 
 This library generates an experiment configuration in this file format and allows phyphox to conenct to your microcontroller. It directly transfers the configuration (including graph configurations, axis labels, etc.) to phyphox and provides function to submit data to be plotted in phyphox or receive sensor data.
 
+The generated UI currently supports view, graph, value, edit, separator, info as well as button, slider, toggle and dropdown controls.
+
 ## Installation
 
 You should be able to find this library in the library search of your Arduino IDE. There you should usually find the latest release from here, which has been tagged with a version number.
@@ -107,6 +109,15 @@ Here are some useful methods to create your own experiment:
 | Edit       | setSigned(bool)          | true = signed values allowed                                      |
 | Edit       | setDecimal(bool)         | true = decimal values allowed                                     |
 | Edit       | setChannel(int)          | As explained above, just with one parameter (1-5)                 |
+| Button     | setOutputChannel(int)    | Maps button output to config buffer channel CB1..CB5              |
+| Button     | setValue(float)          | Value written to output when button is pressed                     |
+| Slider     | setMin/Max/Step(float)   | Sets slider range and granularity                                  |
+| Slider     | setOutputChannel(int)    | Maps slider output to config buffer channel CB1..CB5              |
+| Slider     | setValue(float)          | Sets initial slider value                                          |
+| Toggle     | setDefault(bool)         | Sets initial state in phyphox                                      |
+| Toggle     | setOutputChannel(int)    | Maps toggle output to config buffer channel CB1..CB5              |
+| Dropdown   | setOutputChannel(int)    | Maps dropdown output to config buffer channel CB1..CB5            |
+| Dropdown   | addOption(char*, float)  | Adds option label and mapped numeric value (`<map>` entry)        |
 | ExportSet  | setLabel(char*)          | Sets a label for the exportSet (Used to export to Excel, etc.)    |
 | ExportData | setLabel(char*)          | Sets a label for the exportData                                   |
 | ExportData | setDatachannel(int)      | Defines which channel should be exported for this dataset (1-5)   |
@@ -128,6 +139,55 @@ If for some reason the app shows you an error in form of "ERROR FOUND: ERR_X", w
 * ERR_05: The layout must be auto, extend or fixed.
 
 If you realize that the microcontroller is continiously rebooting, you maybe added too many elements.
+
+### extendedUiControls.ino
+
+This example demonstrates the newly supported interactive phyphox UI controls (`button`, `slider`, `toggle`, `dropdown`, `info`) and maps them to configuration buffers (`CB1..CB4`).
+
+- `PhyphoxBLE::configHandler` is used to react to user interaction.
+- `PhyphoxBLE::read(startStop, pwm, enabled, mode)` reads values sent by the controls.
+- A value and graph element are added so you can immediately see the slider-controlled PWM value.
+
+### voltageAndLedControl.ino
+
+This example shows a practical hardware-control setup:
+
+- A `slider` controls a PWM output voltage setpoint (0..3.3V) on an ESP32 pin.
+- A `button` toggles an LED on and off (edge-triggered in the sketch).
+- Incoming control values are received using `PhyphoxBLE::configHandler` + `PhyphoxBLE::read(...)`.
+- The sketch prints a detailed serial debug line (`cfg#`, button value, slider raw value, voltage, PWM, LED state) every 250ms to help troubleshooting on real hardware.
+
+### as5600Bmp280LedControl.ino
+
+This example combines sensors and UI controls in multiple views:
+
+- View 1: pressure over temperature (BMP280)
+- View 2: absolute angle value (AS5600)
+- View 3: angle over time graph (AS5600)
+- View 4: LED brightness control with button (oscillation on/off) + slider (brightness)
+
+## Simulator
+
+### stage1 (ohne BLE)
+
+In `simulator/stage1` there is an INO-driven browser simulator:
+
+- paste an `.ino` sketch
+- automatically detect `PhyphoxBLE::read(...)` and `PhyphoxBLE::write(...)` signatures
+- render detected read variables as input fields and write variables as output table
+- export a generated `.phyphox` file based on detected channels
+
+### stage2 (PWA + Bridge Skeleton)
+
+In `simulator/stage2` there is a stage-2 setup with:
+
+- browser/PWA frontend
+- host bridge process via WebSocket
+- INO-signature parsing for `PhyphoxBLE::read(...)` / `PhyphoxBLE::write(...)`
+- dynamic live state sync for mapped `CB`/`CH` channels
+- `.phyphox` export from the bridge
+
+The current stage-2 implementation runs in mock/skeleton mode and is prepared for a follow-up BLE peripheral integration.
 
 ### getDataFromSmartphone.ino
 
@@ -161,4 +221,3 @@ This library is released under the GNU Lesser General Public Licence v3.0 (or ne
 ## Contact
 
 Contact us any time at contact@phyphox.org and learn more about phyphox on https://phyphox.org.
-

@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>phyphox INO Simulator (Stage-1)</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; background:#f7f7f9; color:#222; }
+    .grid { display:grid; grid-template-columns: repeat(auto-fit,minmax(320px,1fr)); gap:16px; }
+    .card { background:white; border:1px solid #ddd; border-radius:10px; padding:14px; }
+    textarea { width:100%; min-height:220px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+    label { display:block; margin-top:8px; }
+    input[type="number"] { width:100%; }
+    table { width:100%; border-collapse:collapse; }
+    td,th { padding:6px; border-bottom:1px solid #eee; text-align:left; }
+    button { padding:8px 12px; border-radius:8px; border:1px solid #888; background:#fff; cursor:pointer; margin-right:8px; }
+    button.primary { background:#2563eb; color:#fff; border-color:#1d4ed8; }
+    pre { background:#111; color:#d8ffd8; padding:10px; border-radius:8px; max-height:220px; overflow:auto; }
+    .hint { font-size: .9rem; color:#555; }
+  </style>
+</head>
+<body>
+  <h1>INO -> phyphox Simulator (Stage-1, ohne BLE)</h1>
+  <p class="hint">
+    1) INO-Code einfügen, 2) <b>Analyse</b>, 3) erkannte <code>read(...)</code> als Eingaben und
+    <code>write(...)</code> als Ausgaben prüfen, 4) <code>.phyphox</code> exportieren.
+  </p>
+
+  <div class="grid">
+    <section class="card">
+      <h2>1) INO-Code</h2>
+      <textarea id="inoCode">void onConfigUpdate() {
+  PhyphoxBLE::read(motorButton, motorSlider, mode);
+}
+
+void loop() {
+  float weight = 123.4;
+  float current = 220.0;
+  PhyphoxBLE::write(weight, current, motorSlider);
+}</textarea>
+      <div style="margin-top:10px;">
+        <button class="primary" id="btnAnalyze">Analyse</button>
+        <button id="btnExport">.phyphox exportieren</button>
+      </div>
+      <p class="hint">Parser-Regel: Erkannt werden Aufrufe von <code>PhyphoxBLE::read(...)</code> und <code>PhyphoxBLE::write(...)</code>.</p>
+    </section>
+
+    <section class="card">
+      <h2>2) Erkannte Eingänge (von phyphox -> read)</h2>
+      <div id="rxFields"></div>
+    </section>
+
+    <section class="card">
+      <h2>3) Erkannte Ausgänge (zu phyphox -> write)</h2>
+      <table>
+        <thead><tr><th>Kanal</th><th>Variable</th><th>Wert (simuliert)</th></tr></thead>
+        <tbody id="txTable"></tbody>
+      </table>
+    </section>
+
+    <section class="card">
+      <h2>Live JSON</h2>
+      <pre id="jsonOut"></pre>
+      <h3>Log</h3>
+      <pre id="log"></pre>
+    </section>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
