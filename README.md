@@ -107,6 +107,13 @@ Here are some useful methods to create your own experiment:
 | Edit       | setSigned(bool)          | true = signed values allowed                                      |
 | Edit       | setDecimal(bool)         | true = decimal values allowed                                     |
 | Edit       | setChannel(int)          | As explained above, just with one parameter (1-5)                 |
+| Slider     | setLabel(char*)          | Sets label for the slider                                         |
+| Slider     | setUnit(char*)           | Sets unit                                                         |
+| Slider     | setMin(float)            | Sets minimum slider value                                         |
+| Slider     | setMax(float)            | Sets maximum slider value                                         |
+| Slider     | setStep(float)           | Sets slider step size                                             |
+| Slider     | setValue(float)          | Sets initial slider value                                         |
+| Slider     | setChannel(int)          | As explained above, just with one parameter (1-5)                 |
 | ExportSet  | setLabel(char*)          | Sets a label for the exportSet (Used to export to Excel, etc.)    |
 | ExportData | setLabel(char*)          | Sets a label for the exportData                                   |
 | ExportData | setDatachannel(int)      | Defines which channel should be exported for this dataset (1-5)   |
@@ -135,6 +142,10 @@ The phyphox file format is much more powerful than what is offered by this libra
 
 As the phyphox file format is extremely complex and powerful, please refer to the [phyphox wiki](https://phyphox.org/wiki/index.php/Phyphox_file_format) to learn about it and feel free to contact us if you are stuck or think that a specific aspect of the file format should be easily accessible through our Arduino library.
 
+### motorEncoderWithSliders.ino
+
+This example combines an AS5600 angle sensor and PWM motor control and demonstrates the dedicated `Slider` element for phyphox BLE experiments.
+
 ### Further documentation
 
 For now, this library is rather lightweight. Feel free to browse the `.h` files to learn about the functions that are already available.
@@ -161,4 +172,3 @@ This library is released under the GNU Lesser General Public Licence v3.0 (or ne
 ## Contact
 
 Contact us any time at contact@phyphox.org and learn more about phyphox on https://phyphox.org.
-
