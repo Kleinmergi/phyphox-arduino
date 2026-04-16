@@ -318,6 +318,34 @@ class PhyphoxBleExperiment {
 	private:
 	};
 
+	class Slider : public Element
+	{
+	public:
+		Slider(){};
+		Slider(const Slider &) = delete;
+		Slider &operator=(const Slider &) = delete;
+		~Slider() = default;
+
+		void setUnit(const char *);
+		void setMin(float);
+		void setMax(float);
+		void setStep(float);
+		void setValue(float);
+		void setChannel(int);
+		void setXMLAttribute(const char *);
+		void getBytes(char *);
+
+		char* UNIT = NULL;
+		char* MIN = NULL;
+		char* MAX = NULL;
+		char* STEP = NULL;
+		char* VALUE = NULL;
+		char* XMLAttribute = NULL;
+		char* BUFFER = NULL;
+
+	private:
+	};
+
 	void setTitle(const char *);
 	void setCategory(const char *);
 	void setDescription(const char *);
